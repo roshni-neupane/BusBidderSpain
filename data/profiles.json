@@ -1,0 +1,44 @@
+{
+  "budget": {
+    "name": "Budget traveller",
+    "description": "Price matters most. Will accept one transfer and a fixed ticket.",
+    "request": {
+      "destination": "Malaga",
+      "earliest_date": "2026-07-12",
+      "latest_date": "2026-07-14",
+      "max_budget_eur": 40,
+      "preferred_departure": "morning",
+      "max_transfers": 1,
+      "changeable_required": false
+    },
+    "weights": {"price": 60, "duration": 15, "departure": 10, "flexibility": 15}
+  },
+  "business": {
+    "name": "Business traveller",
+    "description": "Needs a short, direct journey at a convenient time and a changeable ticket.",
+    "request": {
+      "destination": "Malaga",
+      "earliest_date": "2026-07-12",
+      "latest_date": "2026-07-14",
+      "max_budget_eur": 80,
+      "preferred_departure": "08:00",
+      "max_transfers": 0,
+      "changeable_required": true
+    },
+    "weights": {"price": 10, "duration": 40, "departure": 35, "flexibility": 15}
+  },
+  "flexible": {
+    "name": "Flexibility-focused tourist",
+    "description": "Plans may change, so a changeable and refundable fare matters most.",
+    "request": {
+      "destination": "Malaga",
+      "earliest_date": "2026-07-12",
+      "latest_date": "2026-07-14",
+      "max_budget_eur": 55,
+      "preferred_departure": "afternoon",
+      "max_transfers": 1,
+      "changeable_required": true
+    },
+    "weights": {"price": 25, "duration": 15, "departure": 10, "flexibility": 50}
+  }
+}

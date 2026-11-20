@@ -1,0 +1,7 @@
+rank,offer_id,company,departure,price_eur,duration_min,transfers,fare,raw_price,raw_duration,raw_departure,raw_flexibility,score_price,score_duration,score_departure,score_flexibility,points_price,points_duration,points_departure,points_flexibility,total
+1,SOL-MAL-0714-01,SolRuta,2026-07-14 09:30,30.00,525,1,fixed,30.0,525,30,0,100.0,36.4,100.0,0.0,60.0,5.5,10.0,0.0,75.5
+2,SOL-MAL-0712-01,SolRuta,2026-07-12 14:00,32.50,500,1,changeable,32.5,500,300,60,72.2,59.1,51.4,100.0,43.3,8.9,5.1,15.0,72.3
+3,NOC-MAL-0712-01,NocheVia,2026-07-13 00:00,30.00,545,1,fixed,30.0,545,540,0,100.0,18.2,8.1,0.0,60.0,2.7,0.8,0.0,63.5
+4,NOC-MAL-0713-01,NocheVia,2026-07-14 00:00,31.50,555,1,fixed,31.5,555,540,0,83.3,9.1,8.1,0.0,50.0,1.4,0.8,0.0,52.2
+5,SOL-MAL-0713-01,SolRuta,2026-07-13 08:00,39.00,455,0,changeable,39.0,455,60,60,0.0,100.0,94.6,100.0,0.0,15.0,9.5,15.0,39.5
+6,NOC-MAL-0714-02,NocheVia,2026-07-14 23:15,35.00,565,1,fixed,35.0,565,585,0,44.4,0.0,0.0,0.0,26.7,0.0,0.0,0.0,26.7

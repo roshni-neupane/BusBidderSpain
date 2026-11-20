@@ -1,0 +1,16 @@
+destination_id,name,distance_km,coastal,major_city
+BAR,Barcelona,620,yes,yes
+VAL,Valencia,360,yes,yes
+SEV,Seville,530,no,yes
+MAL,Malaga,530,yes,yes
+GRA,Granada,420,no,no
+COR,Cordoba,400,no,no
+BIL,Bilbao,400,yes,yes
+SSE,San Sebastian,450,yes,no
+ZAR,Zaragoza,320,no,yes
+ALI,Alicante,420,yes,no
+MUR,Murcia,400,no,no
+SAL,Salamanca,215,no,no
+TOL,Toledo,75,no,no
+SCQ,Santiago de Compostela,600,no,no
+CAD,Cadiz,650,yes,no

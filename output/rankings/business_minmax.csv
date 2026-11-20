@@ -1,0 +1,7 @@
+rank,offer_id,company,departure,price_eur,duration_min,transfers,fare,raw_price,raw_duration,raw_departure,raw_flexibility,score_price,score_duration,score_departure,score_flexibility,points_price,points_duration,points_departure,points_flexibility,total
+1,VRD-MAL-0712-09,VerdeBus,2026-07-12 11:00,45.50,430,0,changeable and refundable,45.5,430,180,100,75.9,22.7,70.0,100.0,7.6,9.1,24.5,15.0,56.2
+2,VRD-MAL-0713-01,VerdeBus,2026-07-13 14:30,47.00,395,0,changeable and refundable,47.0,395,390,100,70.4,54.5,35.0,100.0,7.0,21.8,12.2,15.0,56.1
+3,CAM-MAL-0712-01,Camino Express,2026-07-12 18:00,66.00,345,0,changeable and refundable,66.0,345,600,100,0.0,100.0,0.0,100.0,0.0,40.0,0.0,15.0,55.0
+4,CST-MAL-0713-01,CostaLink,2026-07-13 11:00,44.00,395,0,changeable,44.0,395,180,60,81.5,54.5,70.0,0.0,8.1,21.8,24.5,0.0,54.5
+5,CAM-MAL-0713-02,Camino Express,2026-07-13 13:30,56.00,380,0,changeable,56.0,380,330,60,37.0,68.2,45.0,0.0,3.7,27.3,15.7,0.0,46.7
+6,SOL-MAL-0713-01,SolRuta,2026-07-13 08:00,39.00,455,0,changeable,39.0,455,0,60,100.0,0.0,100.0,0.0,10.0,0.0,35.0,0.0,45.0

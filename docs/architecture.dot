@@ -1,0 +1,38 @@
+digraph BusBidder {
+  rankdir=TB; fontname="Helvetica"; nodesep=0.4; ranksep=0.45;
+  node [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  subgraph cluster_files { label="Input files (data/)"; style="rounded,dashed"; color="#999999"; fontsize=11;
+    companies [label="companies.csv\ndestinations.csv", shape=note, fillcolor="#eef3fb"];
+    offers [label="offers.csv\noffers_invalid.csv", shape=note, fillcolor="#eef3fb"];
+    profiles [label="profiles.json\n(requests + weights)", shape=note, fillcolor="#eef3fb"];
+  }
+
+  loader [label="loader.py + validation.py\nread CSV, convert types,\nregex IDs, check values", fillcolor="#fff4e0"];
+  market [label="Marketplace\nCompany, Destination,\nOffer, FareConditions", fillcolor="#fff4e0"];
+  review [label="review_queue.csv\nbusbidder.log", shape=note, fillcolor="#fdecec"];
+  traveller [label="TravellerProfile\nTravelRequest + weights\n(weights checked: total 100 %)", fillcolor="#fff4e0"];
+
+  cli [label="cli.py\nmenu / commands", fillcolor="#e9f6ec"];
+  filter [label="constraints.py\nHARD constraints\n(@hard_constraint registry)", fillcolor="#e9f6ec"];
+  scoring [label="scoring.py\nnormalise 0-100, weighted total\n(@criterion registry)", fillcolor="#e9f6ec"];
+  explain [label="explain.py + display.py\nranking table, explanation", fillcolor="#e9f6ec"];
+  booking [label="booking.py\nBookingManager\nBB-2026-XXXXXX", fillcolor="#e9f6ec"];
+  bookings [label="storage/bookings.json", shape=note, fillcolor="#eef3fb"];
+  experiments [label="experiments.py\nE1-E6", fillcolor="#e9f6ec"];
+  results [label="output/experiments.md\noutput/rankings/*.csv", shape=note, fillcolor="#eef3fb"];
+
+  companies -> loader; offers -> loader;
+  loader -> market [label="valid offers"];
+  loader -> review [label="rows set aside,\ncorrections"];
+  profiles -> traveller; market -> traveller [label="destination", style=dashed];
+  traveller -> cli; market -> cli;
+  cli -> filter [label="offers + request"];
+  filter -> scoring [label="acceptable offers"];
+  scoring -> explain [label="ranked offers"];
+  explain -> cli [label="text"];
+  cli -> booking [label="chosen offer"];
+  booking -> bookings [dir=both, label="save / load\n(seats reapplied)"];
+  cli -> experiments; experiments -> results;
+}

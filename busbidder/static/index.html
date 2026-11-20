@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BusBidder Spain</title>
+<style>
+  :root {
+    --ink: #1d2433; --muted: #667085; --line: #e4e7ec; --bg: #f5f3ef; --card: #ffffff;
+    --accent: #c8553d; --accent-dark: #a5402b; --ok: #1f7a4d; --bad: #b42318;
+    --price: #3b6fd8; --duration: #e0a21f; --departure: #2a9d8f; --flexibility: #9b5de5;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink);
+         background: var(--bg); font-size: 15px; }
+  header { background: #1d2433; color: #fff; padding: 18px 28px 0; }
+  .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .brand h1 { margin: 0; font-size: 26px; letter-spacing: .3px; }
+  .brand h1 span { color: #f2a65a; }
+  .brand p { margin: 0; color: #c3c9d5; font-size: 14px; }
+  nav { display: flex; gap: 4px; margin-top: 14px; }
+  nav button { background: none; border: 0; color: #c3c9d5; padding: 10px 16px; font-size: 15px;
+               border-bottom: 3px solid transparent; cursor: pointer; }
+  nav button.active { color: #fff; border-bottom-color: #f2a65a; }
+  main { padding: 22px 28px 40px; max-width: 1400px; margin: 0 auto; }
+  .layout { display: grid; grid-template-columns: 370px 1fr; gap: 22px; align-items: start; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px 20px;
+          box-shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08); }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  .section-title { display: flex; align-items: center; gap: 8px; margin: 18px 0 8px; font-weight: 600; font-size: 14px; }
+  .tag { font-size: 11px; font-weight: 700; letter-spacing: .5px; padding: 3px 8px; border-radius: 999px; text-transform: uppercase; }
+  .tag.hard { background: #fde8e4; color: var(--accent-dark); }
+  .tag.soft { background: #e5f0fb; color: #1f4e8c; }
+  .hint { color: var(--muted); font-size: 12.5px; margin: 2px 0 6px; }
+  label.field { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 8px; margin: 7px 0; font-size: 14px; }
+  input, select { font: inherit; padding: 7px 9px; border: 1px solid #d0d5dd; border-radius: 8px; width: 100%; background: #fff; }
+  input:focus, select:focus { outline: 2px solid #f2a65a; border-color: transparent; }
+  .profiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .profiles button { border: 1px solid #d0d5dd; background: #fff; border-radius: 10px; padding: 9px 8px;
+                     cursor: pointer; font: inherit; font-size: 13.5px; text-align: left; }
+  .profiles button strong { display: block; font-size: 14px; }
+  .profiles button .muted { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .profiles button.active { border-color: var(--accent); box-shadow: 0 0 0 2px #f6d3ca; background: #fffaf8; }
+  .switch { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 14px; cursor: pointer; }
+  .switch input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .weight { display: grid; grid-template-columns: 14px 128px 1fr 44px; align-items: center; gap: 8px; margin: 6px 0; font-size: 14px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .weight input[type=range] { padding: 0; border: 0; }
+  .weight output { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .total { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 14px; }
+  .pill { padding: 3px 10px; border-radius: 999px; font-weight: 700; font-size: 13px; }
+  .pill.ok { background: #dcfae6; color: var(--ok); } .pill.bad { background: #fee4e2; color: var(--bad); }
+  .link { background: none; border: 0; color: var(--accent-dark); cursor: pointer; font: inherit; font-size: 13px; text-decoration: underline; padding: 0; }
+  .segmented { display: flex; border: 1px solid #d0d5dd; border-radius: 10px; overflow: hidden; }
+  .segmented button { flex: 1; border: 0; background: #fff; padding: 8px; cursor: pointer; font: inherit; font-size: 13px; }
+  .segmented button.active { background: #1d2433; color: #fff; }
+  .primary { width: 100%; margin-top: 18px; background: var(--accent); color: #fff; border: 0; border-radius: 10px;
+             padding: 12px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .primary:hover { background: var(--accent-dark); }
+  .secondary { background: #fff; color: var(--ink); border: 1px solid #d0d5dd; border-radius: 8px; padding: 7px 12px; cursor: pointer; font: inherit; font-size: 13.5px; }
+  .secondary:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .error { background: #fee4e2; color: var(--bad); border-radius: 10px; padding: 10px 12px; margin-top: 12px; font-size: 14px; display: none; }
+  .summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .summary .big { font-size: 18px; font-weight: 600; margin-right: 6px; }
+  .chip { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 13px; color: #475467; }
+  .chip b { color: var(--accent-dark); }
+  .winner { border-left: 6px solid var(--accent); }
+  .winner-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .eyebrow { color: var(--accent-dark); font-weight: 700; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; }
+  .winner h3 { margin: 4px 0 2px; font-size: 22px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; color: #475467; font-size: 14px; margin-top: 6px; }
+  .score-big { text-align: right; }
+  .score-big .num { font-size: 40px; font-weight: 700; line-height: 1; }
+  .score-big .of { color: var(--muted); font-size: 13px; }
+  .explain { background: #faf7f2; border-radius: 10px; padding: 12px 14px; margin-top: 14px; line-height: 1.5; font-size: 14.5px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #475467; margin: 18px 0 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .offer { display: grid; grid-template-columns: 38px 1.5fr 1.1fr 1fr 1.6fr 64px 76px; gap: 12px; align-items: center;
+           padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .offer:last-child { border-bottom: 0; }
+  .offer.top { background: #fffaf8; }
+  .rank { width: 30px; height: 30px; border-radius: 50%; background: #eef0f4; display: grid; place-items: center; font-weight: 700; }
+  .offer.top .rank { background: var(--accent); color: #fff; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .fare { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #eef0f4; margin-top: 3px; }
+  .fare.changeable { background: #e5f0fb; color: #1f4e8c; } .fare.refundable { background: #ebe4fb; color: #5b2ea6; }
+  .bar { display: flex; height: 16px; border-radius: 6px; overflow: hidden; background: #eef0f4; }
+  .bar div { height: 100%; }
+  .total-num { font-weight: 700; font-size: 17px; text-align: right; font-variant-numeric: tabular-nums; }
+  .details { grid-column: 2 / -1; display: none; font-size: 13px; }
+  .details table { border-collapse: collapse; margin-top: 4px; }
+  .details td, .details th { padding: 3px 12px 3px 0; text-align: left; }
+  .offer.open .details { display: block; }
+  .list-head { display: grid; grid-template-columns: 38px 1.5fr 1.1fr 1fr 1.6fr 64px 76px; gap: 12px; padding: 0 14px 8px; color: var(--muted); font-size: 12.5px; }
+  table.plain { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.plain th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12.5px; padding: 8px; border-bottom: 1px solid var(--line); }
+  table.plain td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .mono { font-family: Consolas, "SFMono-Regular", monospace; white-space: nowrap; }
+  .empty { color: var(--muted); padding: 30px; text-align: center; }
+  dialog { border: 0; border-radius: var(--radius); padding: 22px 24px; width: min(460px, 92vw); box-shadow: 0 20px 50px rgba(16,24,40,.25); }
+  dialog::backdrop { background: rgba(16,24,40,.45); }
+  dialog h3 { margin: 0 0 10px; }
+  .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+  .ref { font-family: Consolas, monospace; font-size: 26px; font-weight: 700; letter-spacing: 1px; color: var(--accent-dark); margin: 6px 0 12px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>BusBidder <span>Spain</span></h1>
+    <p id="subtitle">Bus offers from Madrid</p>
+  </div>
+  <nav>
+    <button class="active" data-tab="find">Find offers</button>
+    <button data-tab="bookings">My bookings</button>
+    <button data-tab="quality">Data quality</button>
+  </nav>
+</header>
+
+<main>
+  <section id="tab-find" class="layout">
+    <aside class="card">
+      <h2>Your trip</h2>
+      <div class="profiles" id="profiles"></div>
+
+      <div class="section-title"><span class="tag hard">Hard constraints</span></div>
+      <p class="hint">Offers that break any of these are removed before ranking.</p>
+      <label class="field">Destination <select id="destination"></select></label>
+      <label class="field">Earliest departure <input type="date" id="earliest"></label>
+      <label class="field">Latest departure <input type="date" id="latest"></label>
+      <label class="field">Maximum budget (EUR) <input type="number" id="budget" min="1" step="0.5"></label>
+      <label class="field">Maximum transfers <input type="number" id="transfers" min="0" step="1"></label>
+      <label class="switch"><input type="checkbox" id="changeable"> Changeable ticket required</label>
+
+      <div class="section-title"><span class="tag soft">Soft preferences</span></div>
+      <p class="hint">These do not remove offers; they decide the order.</p>
+      <label class="field">Preferred departure <input type="time" id="preferred"></label>
+      <div id="weights"></div>
+      <div class="total"><span>Total <span class="pill ok" id="total">100 %</span></span>
+        <button class="link" id="scale">Scale to 100 %</button></div>
+
+      <div class="section-title">Scoring method</div>
+      <div class="segmented" id="method">
+        <button data-method="hybrid" class="active" title="Min-max for price and duration; fixed scales for departure and flexibility">Final (hybrid)</button>
+        <button data-method="minmax" title="Min-max normalisation for every criterion">First version (min-max)</button>
+      </div>
+
+      <button class="primary" id="rank">Rank offers</button>
+      <div class="error" id="error"></div>
+    </aside>
+
+    <div>
+      <div class="summary" id="summary"><span class="big">Choose a traveller and press “Rank offers”.</span></div>
+      <div id="results"></div>
+    </div>
+  </section>
+
+  <section id="tab-bookings" class="card hidden">
+    <h2>My bookings</h2>
+    <p class="hint">Bookings are saved in storage/bookings.json. No payment details are collected; payment is simulated.</p>
+    <div id="bookings"></div>
+  </section>
+
+  <section id="tab-quality" class="card hidden">
+    <h2>Data quality</h2>
+    <p class="hint">Rows that failed validation are not used; they are set aside for review (output/review_queue.csv).
+      Small format slips in codes are corrected automatically. Sold-out offers are valid and are removed by the seat constraint.</p>
+    <div id="quality"></div>
+  </section>
+</main>
+
+<dialog id="book-dialog">
+  <div id="book-form">
+    <h3>Book this offer</h3>
+    <div id="book-offer" class="muted"></div>
+    <label class="field" style="margin-top:14px">Passenger name <input id="passenger" autocomplete="name"></label>
+    <p class="hint">Payment is simulated. No card or payment details are requested.</p>
+    <div class="error" id="book-error"></div>
+    <div class="actions"><button class="secondary" id="book-cancel">Cancel</button>
+      <button class="primary" style="width:auto;margin:0;padding:9px 18px" id="book-confirm">Confirm booking</button></div>
+  </div>
+  <div id="book-done" class="hidden">
+    <h3>Booking confirmed</h3>
+    <div class="muted">Your booking reference</div>
+    <div class="ref" id="book-ref"></div>
+    <div id="book-summary"></div>
+    <div class="actions"><button class="primary" style="width:auto;margin:0;padding:9px 18px" id="book-close">Done</button></div>
+  </div>
+</dialog>
+
+<script>
+const COLORS = {price: "var(--price)", duration: "var(--duration)", departure: "var(--departure)", flexibility: "var(--flexibility)"};
+let meta = null, chosen = null, method = "hybrid", lastRanking = null, bookingOffer = null;
+
+// Small helper that builds elements safely (text is never inserted as HTML).
+function el(tag, attrs = {}, children = []) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (key === "class") node.className = value;
+    else if (key === "text") node.textContent = value;
+    else if (key === "style") node.setAttribute("style", value);
+    else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+    else node.setAttribute(key, value);
+  }
+  for (const child of [].concat(children)) {
+    if (child === null || child === undefined) continue;
+    node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  return node;
+}
+const $ = id => document.getElementById(id);
+const euro = value => "EUR " + Number(value).toFixed(2);
+const hours = minutes => Math.floor(minutes / 60) + " h " + String(minutes % 60).padStart(2, "0") + " min";
+
+async function api(path, body) {
+  const response = await fetch(path, body === undefined ? {} :
+    {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "something went wrong");
+  return data;
+}
+
+function fareBadge(level) {
+  const kind = level.includes("refundable") ? "refundable" : level.includes("changeable") ? "changeable" : "";
+  return el("span", {class: "fare " + kind, text: level});
+}
+
+// ----- form ----------------------------------------------------------------
+function buildForm() {
+  $("subtitle").textContent = "Madrid to " + meta.destinations.length + " destinations · 5 companies · " + meta.offers + " valid offers";
+  const profiles = $("profiles");
+  for (const profile of meta.profiles) {
+    profiles.append(el("button", {"data-key": profile.key, onclick: () => chooseProfile(profile.key)},
+      [el("strong", {text: profile.name}), el("span", {class: "muted", text: profile.description.split(".")[0]})]));
+  }
+  profiles.append(el("button", {"data-key": "custom", onclick: () => chooseProfile("custom")},
+    [el("strong", {text: "Custom request"}), el("span", {class: "muted", text: "Set your own constraints and weights"})]));
+  for (const name of meta.destinations) $("destination").append(el("option", {value: name, text: name}));
+  for (const c of meta.criteria) {
+    const slider = el("input", {type: "range", min: 0, max: 100, step: 1, id: "w-" + c.name});
+    const value = el("output", {id: "v-" + c.name});
+    slider.addEventListener("input", () => { value.textContent = slider.value; markCustomIfChanged(); updateTotal(); });
+    $("weights").append(el("div", {class: "weight"}, [el("span", {class: "dot", style: "background:" + COLORS[c.name]}),
+      el("span", {text: c.label}), slider, value]));
+  }
+  for (const id of ["destination", "earliest", "latest", "budget", "transfers", "changeable", "preferred"]) {
+    $(id).addEventListener("input", markCustomIfChanged);
+  }
+}
+
+function setForm(request, weights) {
+  $("destination").value = request.destination;
+  $("earliest").value = request.earliest; $("latest").value = request.latest;
+  $("budget").value = request.budget; $("transfers").value = request.transfers;
+  $("changeable").checked = request.changeable; $("preferred").value = request.preferred;
+  for (const c of meta.criteria) { $("w-" + c.name).value = weights[c.name]; $("v-" + c.name).textContent = weights[c.name]; }
+  updateTotal();
+}
+
+function chooseProfile(key) {
+  chosen = key;
+  document.querySelectorAll("#profiles button").forEach(b => b.classList.toggle("active", b.dataset.key === key));
+  const profile = meta.profiles.find(p => p.key === key);
+  if (profile) setForm(profile.request, profile.weights);
+}
+
+// Editing a profile's values turns the search into a custom request.
+function markCustomIfChanged() {
+  if (chosen !== "custom") {
+    chosen = "custom";
+    document.querySelectorAll("#profiles button").forEach(b => b.classList.toggle("active", b.dataset.key === "custom"));
+  }
+}
+
+function weights() {
+  const result = {};
+  for (const c of meta.criteria) result[c.name] = Number($("w-" + c.name).value);
+  return result;
+}
+
+function updateTotal() {
+  const total = Object.values(weights()).reduce((a, b) => a + b, 0);
+  const pill = $("total");
+  pill.textContent = total + " %";
+  pill.className = "pill " + (total === 100 ? "ok" : "bad");
+}
+
+function scaleTo100() {
+  const w = weights(), total = Object.values(w).reduce((a, b) => a + b, 0);
+  if (total === 0) return;
+  const names = meta.criteria.map(c => c.name);
+  let used = 0;
+  names.forEach((name, i) => {
+    const value = i === names.length - 1 ? 100 - used : Math.round(w[name] * 100 / total);
+    used += value;
+    $("w-" + name).value = value; $("v-" + name).textContent = value;
+  });
+  markCustomIfChanged(); updateTotal();
+}
+
+function payload() {
+  const profile = meta.profiles.find(p => p.key === chosen);
+  return {key: profile ? profile.key : "custom", name: profile ? profile.name : "Custom request", method,
+    request: {destination: $("destination").value, earliest: $("earliest").value, latest: $("latest").value,
+      budget: $("budget").value, transfers: $("transfers").value, changeable: $("changeable").checked,
+      preferred: $("preferred").value}, weights: weights()};
+}
+
+// ----- results ---------------------------------------------------------------
+async function rank() {
+  $("error").style.display = "none";
+  try {
+    lastRanking = await api("/api/rank", payload());
+    showResults(lastRanking);
+  } catch (error) {
+    $("error").textContent = error.message; $("error").style.display = "block";
+  }
+}
+
+function showResults(data) {
+  const summary = $("summary"); summary.replaceChildren();
+  summary.append(el("span", {class: "big", text: data.ranking.length + " of " + data.checked + " offers meet all hard constraints"}));
+  for (const r of data.removed) if (r.count) summary.append(el("span", {class: "chip"}, [el("b", {text: r.count}), " " + r.reason]));
+
+  const results = $("results"); results.replaceChildren();
+  if (!data.ranking.length) { results.append(el("div", {class: "card empty", text: data.explanation})); return; }
+
+  const top = data.ranking[0], o = top.offer;
+  results.append(el("div", {class: "card winner"}, [
+    el("div", {class: "winner-head"}, [
+      el("div", {}, [el("div", {class: "eyebrow", text: "Best match for " + data.profile}),
+        el("h3", {text: o.company + " · " + o.departure}),
+        el("div", {class: "facts"}, [el("span", {text: euro(o.price)}), el("span", {text: hours(o.duration_min)}),
+          el("span", {text: o.transfers ? o.transfers + " transfer" : "direct"}), fareBadge(o.fare),
+          el("span", {class: "muted", text: o.offer_id + " · " + o.seats + " seats left"})])]),
+      el("div", {class: "score-big"}, [el("div", {class: "num", text: top.total.toFixed(1)}), el("div", {class: "of", text: "points out of 100"}),
+        el("button", {class: "primary", style: "width:auto;padding:8px 18px;margin-top:10px", text: "Book", onclick: () => openBooking(top)})])]),
+    el("div", {class: "explain", text: data.explanation})]));
+
+  results.append(el("div", {class: "legend"}, [el("span", {text: "Each bar shows the points every criterion adds to the total:"})]
+    .concat(meta.criteria.map(c => el("span", {}, [el("i", {class: "dot", style: "background:" + COLORS[c.name]}), c.label])))));
+
+  const list = el("div", {class: "card", style: "padding:10px 6px"});
+  list.append(el("div", {class: "list-head"}, ["#", "Company and offer", "Departure", "Duration · price", "Points (click a row for details)", "Total", ""]
+    .map(t => el("span", {text: t}))));
+  for (const item of data.ranking) list.append(offerRow(item));
+  results.append(list);
+}
+
+function offerRow(item) {
+  const o = item.offer;
+  const bar = el("div", {class: "bar", title: "Total " + item.total});
+  for (const c of meta.criteria) {
+    bar.append(el("div", {style: "width:" + item.points[c.name] + "%;background:" + COLORS[c.name],
+      title: c.label + ": " + item.points[c.name] + " points (score " + item.scores[c.name] + ")"}));
+  }
+  const details = el("div", {class: "details"}, [el("table", {}, [
+    el("tr", {}, ["Criterion", "Score 0-100", "Points added"].map(t => el("th", {text: t}))),
+    ...meta.criteria.map(c => el("tr", {}, [el("td", {text: c.label}), el("td", {text: item.scores[c.name]}), el("td", {text: item.points[c.name]})])),
+    el("tr", {}, [el("td", {text: "Rating / CO2"}), el("td", {text: o.rating + " / 5"}),
+      el("td", {text: o.co2_kg === null ? "CO2 unknown" : o.co2_kg + " kg CO2 (not used in the score)"})])])]);
+  const row = el("div", {class: "offer" + (item.rank === 1 ? " top" : ""), style: "cursor:pointer",
+    onclick: event => { if (event.target.tagName !== "BUTTON") row.classList.toggle("open"); }}, [
+    el("div", {class: "rank", text: item.rank}),
+    el("div", {}, [el("div", {text: o.company}), el("div", {class: "muted", text: o.offer_id}), fareBadge(o.fare)]),
+    el("div", {}, [el("div", {text: o.departure}), el("div", {class: "muted", text: o.transfers ? o.transfers + " transfer" : "direct"})]),
+    el("div", {}, [el("div", {text: hours(o.duration_min)}), el("div", {class: "muted", text: euro(o.price)})]),
+    bar,
+    el("div", {class: "total-num", text: item.total.toFixed(1)}),
+    el("button", {class: "secondary", text: "Book", onclick: () => openBooking(item)}),
+    details]);
+  return row;
+}
+
+// ----- booking ---------------------------------------------------------------
+function openBooking(item) {
+  bookingOffer = item;
+  const o = item.offer;
+  $("book-offer").textContent = o.company + " · " + o.offer_id + " · " + o.departure + " · " + euro(o.price) +
+    " · " + o.fare + " fare · " + o.seats + " seat(s) left";
+  $("passenger").value = ""; $("book-error").style.display = "none";
+  $("book-form").classList.remove("hidden"); $("book-done").classList.add("hidden");
+  $("book-dialog").showModal(); $("passenger").focus();
+}
+
+async function confirmBooking() {
+  try {
+    const booking = await api("/api/book", {offer_id: bookingOffer.offer.offer_id, name: $("passenger").value, key: chosen});
+    $("book-ref").textContent = booking.reference;
+    const f = booking.fare;
+    $("book-summary").replaceChildren(el("table", {class: "plain"}, [
+      ["Passenger", booking.passenger_name], ["Journey", "Madrid to " + booking.destination + " with " + booking.company],
+      ["Departure", booking.departure], ["Arrival", booking.arrival], ["Price", euro(booking.price_eur) + " (" + booking.payment_status + ")"],
+      ["Fare", f.level + ", luggage " + f.luggage_kg + " kg"], ["Changes / refund", (f.changeable ? "changes allowed" : "no changes") + ", " + (f.refundable ? "refundable" : "not refundable")]]
+      .map(([k, v]) => el("tr", {}, [el("td", {class: "muted", text: k}), el("td", {text: v})]))));
+    $("book-form").classList.add("hidden"); $("book-done").classList.remove("hidden");
+    rank();
+  } catch (error) {
+    $("book-error").textContent = error.message; $("book-error").style.display = "block";
+  }
+}
+
+async function showBookings() {
+  const list = await api("/api/bookings"), box = $("bookings");
+  box.replaceChildren();
+  if (!list.length) { box.append(el("div", {class: "empty", text: "No bookings yet."})); return; }
+  box.append(el("table", {class: "plain"}, [
+    el("tr", {}, ["Reference", "Passenger", "Journey", "Departure", "Price", "Fare", "Status", ""].map(t => el("th", {text: t}))),
+    ...list.map(b => el("tr", {}, [el("td", {class: "mono", text: b.reference}), el("td", {text: b.passenger_name}),
+      el("td", {text: b.company + " to " + b.destination}), el("td", {text: b.departure}), el("td", {text: euro(b.price_eur)}),
+      el("td", {}, [fareBadge(b.fare.level)]),
+      el("td", {text: b.status === "active" ? "active" : "cancelled (refund " + euro(b.refund_eur) + ")"}),
+      el("td", {}, [b.status === "active" ? el("button", {class: "secondary", text: "Cancel", onclick: () => cancelBooking(b.reference)}) : ""])]))]));
+}
+
+async function cancelBooking(reference) {
+  if (!confirm("Cancel booking " + reference + "?")) return;
+  try { const b = await api("/api/cancel", {reference}); alert("Booking cancelled. Refund: " + euro(b.refund_eur)); }
+  catch (error) { alert(error.message); }
+  showBookings();
+}
+
+async function showQuality() {
+  const data = await api("/api/review"), box = $("quality");
+  const rows = {};
+  for (const r of data.rows) (rows[r.file + " row " + r.row] ||= {offer: r.offer_id, reasons: []}).reasons.push(r.field + ": " + r.reason);
+  box.replaceChildren(el("p", {}, [el("b", {text: Object.keys(rows).length + " rows set aside"}),
+    ", " + data.corrections.length + " automatic corrections."]),
+    el("table", {class: "plain"}, [el("tr", {}, ["Where", "Offer ID", "Problem(s)"].map(t => el("th", {text: t}))),
+      ...Object.entries(rows).map(([where, r]) => el("tr", {}, [el("td", {text: where}), el("td", {class: "mono", text: r.offer || "-"}),
+        el("td", {text: r.reasons.join("; ")})])),
+      ...data.corrections.map(text => el("tr", {}, [el("td", {text: "corrected"}), el("td", {text: "-"}), el("td", {text: text})]))]));
+}
+
+// ----- start -----------------------------------------------------------------
+document.querySelectorAll("nav button").forEach(button => button.addEventListener("click", () => {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b === button));
+  for (const tab of ["find", "bookings", "quality"]) $("tab-" + tab).classList.toggle("hidden", tab !== button.dataset.tab);
+  if (button.dataset.tab === "bookings") showBookings();
+  if (button.dataset.tab === "quality") showQuality();
+}));
+document.querySelectorAll("#method button").forEach(button => button.addEventListener("click", () => {
+  method = button.dataset.method;
+  document.querySelectorAll("#method button").forEach(b => b.classList.toggle("active", b === button));
+  if (lastRanking) rank();
+}));
+$("scale").addEventListener("click", scaleTo100);
+$("rank").addEventListener("click", rank);
+$("book-cancel").addEventListener("click", () => $("book-dialog").close());
+$("book-close").addEventListener("click", () => $("book-dialog").close());
+$("book-confirm").addEventListener("click", confirmBooking);
+$("passenger").addEventListener("keydown", event => { if (event.key === "Enter") confirmBooking(); });
+
+api("/api/meta").then(data => { meta = data; buildForm(); chooseProfile(meta.profiles[0].key); rank(); })
+  .catch(error => { $("summary").textContent = "Could not load the data: " + error.message; });
+</script>
+</body>
+</html>

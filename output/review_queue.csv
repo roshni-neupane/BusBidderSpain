@@ -1,0 +1,16 @@
+file,row,offer_id,field,reason
+offers_invalid.csv,2,SOL-MAL-0712-09,price_eur,-12.00 is below the lowest allowed value 0.01
+offers_invalid.csv,3,CAM-XYZ-0712-01,destination_id,unknown destination 'XYZ'
+offers_invalid.csv,4,CST-MAL-0732-01,departure,'2026-07-32 10:00' is not a valid date and time (YYYY-MM-DD HH:MM)
+offers_invalid.csv,4,CST-MAL-0732-01,arrival,'2026-07-32 16:30' is not a valid date and time (YYYY-MM-DD HH:MM)
+offers_invalid.csv,5,VRD-MAL-0713-09,arrival,arrival 2026-07-13 11:00 is not after departure 2026-07-13 15:00
+offers_invalid.csv,6,NOC-MAL-0713-09,rating,6.2 is above the highest allowed value 5
+offers_invalid.csv,7,SOL-MAL-0714-09,seats_available,-3 is below the lowest allowed value 0
+offers_invalid.csv,8,sol-mal-714-1,offer_id,'sol-mal-714-1' does not have the format AAA-BBB-MMDD-NN
+offers_invalid.csv,9,BUS-MAL-0714-01,company_id,unknown company 'BUS'
+offers_invalid.csv,10,CAM-MAL-0714-09,price_eur,value is missing
+offers_invalid.csv,11,CST-MAL-0714-09,transfers,'one' is not a whole number
+offers_invalid.csv,12,VRD-MAL-0714-09,changeable,'maybe' must be yes or no
+offers_invalid.csv,13,CST-MAL-0712-01,offer_id,duplicate of an offer already loaded
+offers_invalid.csv,14,NOC-MAL-0712-09,refundable,a refundable fare must also be changeable
+offers_invalid.csv,15,SOL-MAL-0713-09,row,expected 13 values but found 12

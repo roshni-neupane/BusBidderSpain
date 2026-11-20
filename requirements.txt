@@ -1,0 +1,2 @@
+# BusBidder Spain uses only the Python standard library (Python 3.10 or newer).
+# No packages need to be installed.
